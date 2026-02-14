@@ -28,25 +28,23 @@
             overflow: hidden;
         }
 
-        /* Corazones flotantes de fondo */
+        /* Fondo con corazones */
         .bg-hearts {
             position: absolute;
             width: 100%;
             height: 100%;
-            top: 0;
-            left: 0;
             z-index: -1;
         }
 
-        /* Contenedor del sobre */
+        /* Sobre */
         .envelope-wrapper {
             position: relative;
             width: 350px;
             height: 230px;
             cursor: pointer;
+            margin-top: 50px;
         }
 
-        /* Parte trasera del sobre */
         .envelope {
             position: relative;
             width: 100%;
@@ -57,7 +55,6 @@
             z-index: 1;
         }
 
-        /* La Tapa del sobre */
         .flap {
             position: absolute;
             top: 0;
@@ -70,7 +67,6 @@
             z-index: 4;
         }
 
-        /* Parte delantera (los lados del sobre) */
         .front {
             position: absolute;
             top: 0;
@@ -83,16 +79,7 @@
             z-index: 3;
         }
 
-        .front-right {
-            position: absolute;
-            top: 0;
-            right: 0;
-            border-bottom: 230px solid transparent;
-            border-right: 350px solid rgba(251, 111, 146, 0.4); /* Sombra lateral */
-            z-index: 3;
-        }
-
-        /* La Carta (Oculta al inicio) */
+        /* Carta Interactiva */
         .card {
             position: absolute;
             top: 10px;
@@ -100,49 +87,70 @@
             width: 320px;
             height: 200px;
             background-color: var(--color-carta);
-            padding: 20px;
-            box-sizing: border-box;
             border-radius: 10px;
             z-index: 2;
-            opacity: 0; /* Invisible al inicio */
+            opacity: 0;
             transition: transform 0.8s ease, opacity 0.4s ease, height 0.8s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            text-align: center;
-            overflow: hidden;
+        }
+
+        /* Contenedor interno con Scroll para que el texto no se salga */
+        .card-content {
+            padding: 20px;
+            overflow-y: auto; /* Esto permite bajar si el texto es largo */
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Estilo Polaroid de la foto */
+        .polaroid {
+            width: 80%;
+            background: white;
+            padding: 10px 10px 25px 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: rotate(-3deg);
+            margin-bottom: 20px;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         .card h2 {
             font-family: 'Dancing Script', cursive;
             color: var(--color-titulo);
-            margin: 0 0 10px 0;
             font-size: 1.6rem;
+            margin: 10px 0;
+            text-align: center;
         }
 
         .card p {
             font-size: 14px;
-            line-height: 1.4;
+            line-height: 1.6;
             color: var(--color-texto);
-            margin: 5px 0;
+            text-align: center;
         }
 
-        /* Estado Abierto */
+        /* Efecto al abrir */
         .envelope-wrapper.open .flap {
             transform: rotateX(180deg);
-            z-index: 1; /* Pasa atrás de la carta */
+            z-index: 1;
         }
 
         .envelope-wrapper.open .card {
             opacity: 1;
-            transform: translateY(-220px); /* Sube la carta */
-            height: 380px; /* Crece para mostrar el texto */
+            transform: translateY(-280px); /* Sube la carta */
+            height: 450px; /* Tamaño mediano/grande */
             z-index: 5;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
-        /* Corazón decorativo */
+        /* Corazón de cierre */
         .heart-btn {
             position: absolute;
             top: 50%;
@@ -153,7 +161,6 @@
             transform: translate(-50%, -20%) rotate(45deg);
             z-index: 6;
             transition: opacity 0.5s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .heart-btn::before, .heart-btn::after {
@@ -164,7 +171,6 @@
             background-color: var(--color-titulo);
             border-radius: 50%;
         }
-
         .heart-btn::before { left: -25px; }
         .heart-btn::after { top: -25px; }
 
@@ -175,17 +181,20 @@
 
         .instruction {
             position: absolute;
-            bottom: -80px;
+            bottom: -60px;
             width: 100%;
             text-align: center;
             color: var(--color-titulo);
             font-weight: 600;
-            animation: bounce 1.5s infinite;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        /* Scrollbar estética */
+        .card-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .card-content::-webkit-scrollbar-thumb {
+            background: var(--color-tapa);
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -200,27 +209,30 @@
         <div class="heart-btn"></div>
         
         <div class="card">
-            <h2>¡Feliz San Valentín, Lindo! ❤️</h2>
-            <p>Te amo mucho, gracias por cuidarme y escucharme siempre. Estoy super agradecida de haber compartido más de un año a tu lado.</p>
-            <p>Espero compartir muchoooooo tiempo más juntos, riendonos, jugando, paseando y comiendo ricoo.</p>
-            <p style="font-weight: bold; margin-top: 10px; color: var(--color-titulo);">Eres el novio más guapo y perfecto del mundooo y yo un poco renegona ya sé pero soportaaa... por que no te vas a ir. muak besitos. 💋</p>
+            <div class="card-content">
+                <div class="polaroid">
+                    <img src="mifoto.jpeg" alt="Nosotros">
+                </div>
+                
+                <h2>¡Feliz San Valentín, Lindo! ❤️</h2>
+                <p>Te amo mucho, gracias por cuidarme y escucharme siempre. Estoy super agradecida de haber compartido más de un año a tu lado.</p>
+                <p>Espero compartir muchoooooo tiempo más juntos, riendonos, jugando, paseando y comiendo ricoo.</p>
+                <p style="font-weight: bold; margin-top: 10px; color: var(--color-titulo);">Eres el novio más guapo y perfecto del mundooo y yo un poco renegona ya sé pero soportaaa... por que no te vas a ir. muak besitos. 💋</p>
+            </div>
         </div>
 
-        <div class="instruction">Haz click para abrir tu carta ❤️</div>
+        <div class="instruction">Haz click para abrir tu regalo ❤️</div>
     </div>
 
     <script>
         const container = document.getElementById('hearts-container');
-        const emojis = ['❤️', '💖', '✨', '🌸'];
-        
-        for (let i = 0; i < 25; i++) {
+        for (let i = 0; i < 20; i++) {
             const heart = document.createElement('div');
-            heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.innerHTML = '❤️';
             heart.style.position = 'absolute';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.top = Math.random() * 100 + 'vh';
-            heart.style.opacity = Math.random() * 0.6;
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.opacity = Math.random() * 0.5;
             container.appendChild(heart);
         }
     </script>
