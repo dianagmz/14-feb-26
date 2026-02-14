@@ -28,7 +28,7 @@
             overflow: hidden;
         }
 
-        /* Corazones de fondo */
+        /* Corazones flotantes de fondo */
         .bg-hearts {
             position: absolute;
             width: 100%;
@@ -38,123 +38,152 @@
             z-index: -1;
         }
 
-        /* Contenedor Principal */
-        .valentines-day {
+        /* Contenedor del sobre */
+        .envelope-wrapper {
             position: relative;
+            width: 350px;
+            height: 230px;
             cursor: pointer;
         }
 
+        /* Parte trasera del sobre */
         .envelope {
             position: relative;
-            width: 320px;
-            height: 200px;
+            width: 100%;
+            height: 100%;
             background-color: var(--color-sobre);
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            z-index: 1;
         }
 
-        .envelope::before {
-            content: "";
+        /* La Tapa del sobre */
+        .flap {
             position: absolute;
             top: 0;
-            z-index: 4;
-            border-top: 110px solid var(--color-tapa);
-            border-left: 160px solid transparent;
-            border-right: 160px solid transparent;
+            left: 0;
+            border-left: 175px solid transparent;
+            border-right: 175px solid transparent;
+            border-top: 130px solid var(--color-tapa);
             transform-origin: top;
             transition: transform 0.6s ease;
+            z-index: 4;
         }
 
-        /* Carta */
+        /* Parte delantera (los lados del sobre) */
+        .front {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 175px solid transparent;
+            border-right: 175px solid transparent;
+            border-bottom: 115px solid var(--color-sobre);
+            z-index: 3;
+        }
+
+        .front-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-bottom: 230px solid transparent;
+            border-right: 350px solid rgba(251, 111, 146, 0.4); /* Sombra lateral */
+            z-index: 3;
+        }
+
+        /* La Carta (Oculta al inicio) */
         .card {
             position: absolute;
-            left: 10px;
-            bottom: 10px;
-            width: 300px;
-            height: 180px;
+            top: 10px;
+            left: 15px;
+            width: 320px;
+            height: 200px;
             background-color: var(--color-carta);
-            padding: 25px;
+            padding: 20px;
             box-sizing: border-box;
-            border-radius: 5px;
+            border-radius: 10px;
             z-index: 2;
-            transition: transform 0.6s ease, bottom 0.6s ease;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            opacity: 0; /* Invisible al inicio */
+            transition: transform 0.8s ease, opacity 0.4s ease, height 0.8s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             justify-content: center;
             text-align: center;
+            overflow: hidden;
         }
 
         .card h2 {
             font-family: 'Dancing Script', cursive;
             color: var(--color-titulo);
             margin: 0 0 10px 0;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
         }
 
         .card p {
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.4;
             color: var(--color-texto);
-            margin: 0;
+            margin: 5px 0;
         }
 
-        /* Interactividad al abrir */
-        .valentines-day.open .envelope::before {
+        /* Estado Abierto */
+        .envelope-wrapper.open .flap {
             transform: rotateX(180deg);
-            z-index: 1;
+            z-index: 1; /* Pasa atrás de la carta */
         }
 
-        .valentines-day.open .card {
-            transform: translateY(-160px) scale(1.1);
-            height: auto;
-            min-height: 250px;
+        .envelope-wrapper.open .card {
+            opacity: 1;
+            transform: translateY(-220px); /* Sube la carta */
+            height: 380px; /* Crece para mostrar el texto */
             z-index: 5;
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
-        /* Corazón central */
-        .heart {
+        /* Corazón decorativo */
+        .heart-btn {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             background-color: var(--color-titulo);
             transform: translate(-50%, -20%) rotate(45deg);
             z-index: 6;
-            transition: opacity 0.4s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: opacity 0.5s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .heart::before, .heart::after {
+        .heart-btn::before, .heart-btn::after {
             content: "";
             position: absolute;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             background-color: var(--color-titulo);
             border-radius: 50%;
         }
 
-        .heart::before { left: -20px; }
-        .heart::after { top: -20px; }
+        .heart-btn::before { left: -25px; }
+        .heart-btn::after { top: -25px; }
 
-        .valentines-day.open .heart {
+        .envelope-wrapper.open .heart-btn {
             opacity: 0;
+            pointer-events: none;
         }
 
-        .click-me {
+        .instruction {
             position: absolute;
-            bottom: -60px;
+            bottom: -80px;
             width: 100%;
             text-align: center;
             color: var(--color-titulo);
             font-weight: 600;
-            animation: updown 1.5s infinite;
+            animation: bounce 1.5s infinite;
         }
 
-        @keyframes updown {
+        @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
@@ -164,29 +193,33 @@
 
     <div class="bg-hearts" id="hearts-container"></div>
 
-    <div class="valentines-day" onclick="this.classList.toggle('open')">
-        <div class="envelope">
-            <div class="heart"></div>
-            <div class="card">
-                <h2>¡Feliz San Valentín, Lindo!</h2>
-                <p>Te amo mucho, gracias por cuidarme y escucharme siempre. Estoy super agradecida de haber compartido más de un año a tu lado.</p>
-                <p style="margin-top: 8px;">Espero compartir muchoooooo tiempo más juntos, riendonos, jugando, paseando y comiendo ricoo.</p>
-                <p style="margin-top: 8px; font-weight: bold;">Eres el novio más guapo y perfecto del mundooo y yo un poco renegona ya sé pero soportaaa... por que no te vas a ir. muak besitos. 💋</p>
-            </div>
+    <div class="envelope-wrapper" onclick="this.classList.toggle('open')">
+        <div class="flap"></div>
+        <div class="front"></div>
+        <div class="envelope"></div>
+        <div class="heart-btn"></div>
+        
+        <div class="card">
+            <h2>¡Feliz San Valentín, Lindo! ❤️</h2>
+            <p>Te amo mucho, gracias por cuidarme y escucharme siempre. Estoy super agradecida de haber compartido más de un año a tu lado.</p>
+            <p>Espero compartir muchoooooo tiempo más juntos, riendonos, jugando, paseando y comiendo ricoo.</p>
+            <p style="font-weight: bold; margin-top: 10px; color: var(--color-titulo);">Eres el novio más guapo y perfecto del mundooo y yo un poco renegona ya sé pero soportaaa... por que no te vas a ir. muak besitos. 💋</p>
         </div>
-        <div class="click-me">Toca el sobre ❤️</div>
+
+        <div class="instruction">Haz click para abrir tu carta ❤️</div>
     </div>
 
     <script>
-        // Generar corazones flotantes de fondo
         const container = document.getElementById('hearts-container');
-        for (let i = 0; i < 20; i++) {
+        const emojis = ['❤️', '💖', '✨', '🌸'];
+        
+        for (let i = 0; i < 25; i++) {
             const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
+            heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
             heart.style.position = 'absolute';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.top = Math.random() * 100 + 'vh';
-            heart.style.opacity = Math.random() * 0.5;
+            heart.style.opacity = Math.random() * 0.6;
             heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
             container.appendChild(heart);
         }
