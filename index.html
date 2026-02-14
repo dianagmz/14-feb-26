@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para mi novio guapo ❤️</title>
+    <title>Para mi guapo ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap');
 
@@ -17,38 +18,22 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: var(--color-fondo);
-            font-family: 'Quicksand', sans-serif;
-            overflow: hidden;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background-color: var(--color-fondo);
+            font-family: 'Quicksand', sans-serif; overflow: hidden;
         }
 
-        /* Fondo con corazones */
-        .bg-hearts {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        /* Sobre */
+        /* Contenedor del sobre */
         .envelope-wrapper {
             position: relative;
-            width: 350px;
-            height: 230px;
+            width: 320px; height: 220px;
             cursor: pointer;
-            margin-top: 50px;
+            transition: transform 0.3s;
         }
 
         .envelope {
-            position: relative;
-            width: 100%;
-            height: 100%;
+            position: relative; width: 100%; height: 100%;
             background-color: var(--color-sobre);
             border-radius: 0 0 15px 15px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -56,184 +41,182 @@
         }
 
         .flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-left: 175px solid transparent;
-            border-right: 175px solid transparent;
-            border-top: 130px solid var(--color-tapa);
-            transform-origin: top;
-            transition: transform 0.6s ease;
+            position: absolute; top: 0; left: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid var(--color-tapa);
+            transform-origin: top; transition: transform 0.6s ease;
             z-index: 4;
         }
 
         .front {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-left: 175px solid transparent;
-            border-right: 175px solid transparent;
-            border-bottom: 115px solid var(--color-sobre);
+            position: absolute; top: 0; left: 0;
+            width: 0; height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-bottom: 110px solid var(--color-sobre);
             z-index: 3;
         }
 
-        /* Carta Interactiva */
+        /* La Carta (con scroll interno) */
         .card {
-            position: absolute;
-            top: 10px;
-            left: 15px;
-            width: 320px;
-            height: 200px;
+            position: absolute; top: 5px; left: 10px;
+            width: 300px; height: 190px;
             background-color: var(--color-carta);
-            border-radius: 10px;
-            z-index: 2;
+            border-radius: 10px; z-index: 2;
             opacity: 0;
             transition: transform 0.8s ease, opacity 0.4s ease, height 0.8s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto; scroll-behavior: smooth;
         }
 
-        /* Contenedor interno con Scroll para que el texto no se salga */
-        .card-content {
+        /* Paso 1: Foto tipo Polaroid */
+        .photo-step {
+            display: flex; flex-direction: column; align-items: center;
             padding: 20px;
-            overflow-y: auto; /* Esto permite bajar si el texto es largo */
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
-        /* Estilo Polaroid de la foto */
         .polaroid {
-            width: 80%;
-            background: white;
-            padding: 10px 10px 25px 10px;
+            width: 90%; background: white;
+            padding: 10px 10px 30px 10px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transform: rotate(-3deg);
-            margin-bottom: 20px;
+            transform: rotate(-2deg); margin-bottom: 20px;
         }
 
-        .polaroid img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .polaroid img { width: 100%; height: auto; display: block; }
+
+        /* Paso 2: El mensaje (oculto al inicio) */
+        .message-step {
+            padding: 0 20px 20px 20px;
+            text-align: center;
+            display: none; /* Se activa con JS */
         }
 
         .card h2 {
             font-family: 'Dancing Script', cursive;
-            color: var(--color-titulo);
-            font-size: 1.6rem;
-            margin: 10px 0;
-            text-align: center;
+            color: var(--color-titulo); font-size: 1.6rem; margin: 10px 0;
         }
 
-        .card p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--color-texto);
-            text-align: center;
+        .card p { font-size: 14px; line-height: 1.6; color: var(--color-texto); }
+
+        /* Botón interactivo dentro de la carta */
+        .btn-leer {
+            background: var(--color-titulo); color: white;
+            border: none; padding: 10px 20px; border-radius: 20px;
+            font-weight: bold; cursor: pointer; margin-top: 10px;
+            font-family: 'Quicksand', sans-serif;
+            transition: transform 0.2s;
         }
 
-        /* Efecto al abrir */
-        .envelope-wrapper.open .flap {
-            transform: rotateX(180deg);
-            z-index: 1;
+        .btn-leer:active { transform: scale(0.95); }
+
+        /* Animaciones de apertura */
+        .open .flap { transform: rotateX(180deg); z-index: 1; }
+        .open .card {
+            opacity: 1; transform: translateY(-180px);
+            height: 400px; z-index: 5;
         }
 
-        .envelope-wrapper.open .card {
-            opacity: 1;
-            transform: translateY(-280px); /* Sube la carta */
-            height: 450px; /* Tamaño mediano/grande */
-            z-index: 5;
-        }
-
-        /* Corazón de cierre */
         .heart-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 50px;
-            height: 50px;
-            background-color: var(--color-titulo);
+            position: absolute; top: 50%; left: 50%;
+            width: 50px; height: 50px; background-color: var(--color-titulo);
             transform: translate(-50%, -20%) rotate(45deg);
-            z-index: 6;
-            transition: opacity 0.5s ease;
+            z-index: 6; transition: opacity 0.5s ease;
         }
-
         .heart-btn::before, .heart-btn::after {
-            content: "";
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-color: var(--color-titulo);
-            border-radius: 50%;
+            content: ""; position: absolute; width: 50px; height: 50px;
+            background-color: var(--color-titulo); border-radius: 50%;
         }
         .heart-btn::before { left: -25px; }
         .heart-btn::after { top: -25px; }
 
-        .envelope-wrapper.open .heart-btn {
-            opacity: 0;
-            pointer-events: none;
-        }
+        .open .heart-btn { opacity: 0; pointer-events: none; }
 
         .instruction {
-            position: absolute;
-            bottom: -60px;
-            width: 100%;
-            text-align: center;
-            color: var(--color-titulo);
-            font-weight: 600;
+            position: absolute; bottom: -60px; width: 100%;
+            text-align: center; color: var(--color-titulo); font-weight: 600;
         }
 
-        /* Scrollbar estética */
-        .card-content::-webkit-scrollbar {
-            width: 5px;
-        }
-        .card-content::-webkit-scrollbar-thumb {
-            background: var(--color-tapa);
-            border-radius: 10px;
-        }
+        /* Estilo del scrollbar */
+        .card::-webkit-scrollbar { width: 4px; }
+        .card::-webkit-scrollbar-thumb { background: var(--color-tapa); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-hearts" id="hearts-container"></div>
-
-    <div class="envelope-wrapper" onclick="this.classList.toggle('open')">
+    <div class="envelope-wrapper" id="envelope">
         <div class="flap"></div>
         <div class="front"></div>
         <div class="envelope"></div>
         <div class="heart-btn"></div>
         
-        <div class="card">
-            <div class="card-content">
+        <div class="card" id="mainCard">
+            <div class="photo-step" id="photoStep">
                 <div class="polaroid">
                     <img src="image/mifoto.jpeg" alt="Nosotros">
                 </div>
-                
+                <button class="btn-leer" onclick="mostrarMensaje(event)">Click para leer mi carta ❤️</button>
+            </div>
+
+            <div class="message-step" id="messageStep">
                 <h2>¡Feliz San Valentín, Lindo! ❤️</h2>
                 <p>Te amo mucho, gracias por cuidarme y escucharme siempre. Estoy super agradecida de haber compartido más de un año a tu lado.</p>
                 <p>Espero compartir muchoooooo tiempo más juntos, riendonos, jugando, paseando y comiendo ricoo.</p>
-                <p style="font-weight: bold; margin-top: 10px; color: var(--color-titulo);">Eres el novio más guapo y perfecto del mundooo y yo un poco renegona ya sé pero soportaaa... por que no te vas a ir. muak besitos. 💋</p>
+                <p style="font-weight: bold; color: var(--color-titulo); margin-top: 15px;">
+                    Eres el novio más guapo y perfecto del mundooo y yo un poco renegona ya sé pero soportaaa... por que no te vas a ir. muak besitos. 💋
+                </p>
             </div>
         </div>
 
-        <div class="instruction">Haz click para abrir tu regalo ❤️</div>
+        <div class="instruction">Haz click para abrir ❤️</div>
     </div>
 
     <script>
-        const container = document.getElementById('hearts-container');
-        for (let i = 0; i < 20; i++) {
-            const heart = document.createElement('div');
-            heart.innerHTML = '❤️';
-            heart.style.position = 'absolute';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.top = Math.random() * 100 + 'vh';
-            heart.style.opacity = Math.random() * 0.5;
-            container.appendChild(heart);
+        const envelope = document.getElementById('envelope');
+        const card = document.getElementById('mainCard');
+        const photoStep = document.getElementById('photoStep');
+        const messageStep = document.getElementById('messageStep');
+
+        // Abrir el sobre
+        envelope.addEventListener('click', function() {
+            if(!this.classList.contains('open')) {
+                this.classList.add('open');
+            }
+        });
+
+        // Función para mostrar el mensaje y lanzar serpentinas
+        function mostrarMensaje(event) {
+            event.stopPropagation(); // Evita que el sobre se cierre al hacer click en el botón
+            
+            messageStep.style.display = 'block';
+            
+            // Scroll suave hacia el mensaje
+            card.scrollTo({
+                top: card.scrollHeight,
+                behavior: 'smooth'
+            });
+
+            // EFECTO DE SERPENTINAS Y FUEGOS ARTIFICIALES
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              // Lanza desde dos puntos diferentes
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         }
     </script>
 </body>
